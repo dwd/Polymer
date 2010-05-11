@@ -1,0 +1,135 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Technical Stuff that Polymer does</title>
+  </head>
+
+  <body>
+    <h1>Protocol Overview: Polymer does...</h1>
+    
+    <h2>...ACAP</h2>
+    
+    <p>Polymer was started, first and foremost, as a sort of testbed or proof of concept for ACAP, so obviously it supports a reasonable subset of the draft ACAP datasets, many of which have expired.</p>
+    
+    <p>In particular, email, personality, bookmarks, and addressbook are all supported classes. And yes, originally, the only reason it supported bookmarks was indeed purely because I can, but it's turned into a bit of a spiffy feature.</p>
+    <p>ACAP is supported and used very heavily indeed - in particular, only my ACAP server is, as far as I know, fully featured enough to cope. (The Cyrus one is almost good enough, but I hear that DELETEDSINCE still causes it to crash.)</p>
+    
+    <p>Note that, contrary to popular belief, I developed an ACAP server and client in order to see if my suspicion that ACAP was "good" was true, and I continue to use ACAP because my suspicion appears correct in practise. Show me something better (or help me design something better), and I'll use it happily.</p>
+    
+    <h2>...IMAP</h2>
+    
+    <p>I also have a long-standing fascination with IMAP. Polymer is an online client - meaning it has no 'disconnected' state. It's running off an IMAP library I wrote which tries to use a single connection, heavy caching, and minimal prefetching. This means that it maintains a full cache between sessions, and so it's not quite the same as a cacheless "classic" online client. For the most part, if connectivity to the IMAP server is lost, it behaves as if the latency is simply very high.</p>
+    <p>It supports a wide array of extensions, both formally published as RFCs and informally as drafts. In some cases, the drafts have expired.</p>
+    <p>Polymer's IMAP support operates using a single connection. It switches between mailboxes, resynchronizing them on entry. As a result, it's been driven toward very fast resync, and this became obviously useful on low-bandwidth, high-latency links, so I've optimized toward that.</p>
+    
+    <h2>...Submission</h2>
+    
+    <p>Polymer uses Submission to send mail - that's ESMTP, tweaked and extended for maximum benefit to email clients sending mail. It can cope perfectly well with a standard ISP's ESMTP server, but be warned that you won't be able to roam very easily.</p>
+    
+    <p>Polymer itself uses a facility of the library called "transmission" for sending messages, which effectively takes a description of the message, and causes a message matching that description to be transmitted to various destinations. Gradually, it's becoming more and more capable of transmitting the message to multiple destinations in parallel, including IMAP folders, email recipients, and newsgroups.</p>
+    
+    <h2>...NNTP</h2>
+    
+    <p>Reading news is pointless over low bandwidth, but sending articles (posting) is quite sensible. Polymer has fairly poor support for NNTP, which gets fixed enough to work every time I want to participate in a discussion...</p>
+    <p>I read the news via IMAP, in case you're wondering.</p>
+
+    <h2>Links to specifications</h2>
+    
+    <p>The following specifications are intended to be supported. Please let me know if you discover they aren't being. Most of these are actually supported by the Infotrope Python Library, which Polymer uses.</p>
+    
+    <dl>
+      <dt>MIME</dt>
+      <dd>
+	<dl>
+	  <dt>Basic MIME (RFC2045,RFC2046,RFC2047)</dt>
+	  <dd>Covered by many standards. The majority of processing Polymer leaves to the IMAP server, however it parses headers and assembles messages itself. The Infotrope Python Library, which is underneath, does have MIME parsing code, but Polymer doesn't (currently) use it at all.</dd>
+	  <dt>multipart/related (RFC2387)</dt>
+	  <dd>Supported in full.</dd>
+	  <dt>Content-Disposition (RFC2231)</dt>
+	  <dd>Should be supported. RFC3459 is not, yet, but I do intend to get around to that when MDN support goes in.</dd>
+	</dl>
+      </dd>
+      <dt>IMAP</dt>
+      <dd><p>RFCs and drafts, with untested features in <i>italics</i>:</p>
+	<dl>
+	  <dt>IMAP4rev1 (<a href='http://www.ietf.org/rfc/rfc3501.txt'>RFC3501</a>)</dt>
+	  <dd>Supported. Polymer makes some attempt to drop STATUS, etc, where only IMAP4 is available. However, Polymer is much more efficient at resyncs where IMAP4rev1 is supported.</dd>
+	  <dt>MULTIAPPEND (<a href='http://www.ietf.org/rfc/rfc3502.txt'>RFC3502</a>)</dt>
+	  <dd>Supported. Not actually available through the UI, however, so not terribly well tested.</dd>
+	  <dt>BINARY (<a href='http://www.ietf.org/rfc/rfc3516.txt'>RFC3516</a>)</dt>
+	  <dd>Supported both in FETCH and APPEND. Recently retested with Cyrus IMAP 2.3, and the support aided development of Binary upload support in Cyrus IMAP 2.3.4.</dd>
+	  <dt>CHILDREN (<a href='http://www.ietf.org/rfc/rfc3348.txt'>RFC3348</a>)</dt>
+	  <dd>Supported. I do detect whether \HasNoChildren flags are about, in the case where CHILDREN (or LISTEXT or LIST-EXTENDED) is advertised, I ignore them otherwise, and \HasChildren is always ignored.</dd>
+	  <dt>ID (<a href='http://www.ietf.org/rfc/rfc2971.txt'>RFC2971</a>)</dt>
+	  <dd>Supported (Viewable using Properties in server context menu)</dd>
+	  <dt>STARTTLS (<a href='http://www.ietf.org/rfc/rfc2595.txt'>RFC2595</a>/<a href='http://www.ietf.org/rfc/rfc3501.txt'>RFC3501</a>)</dt>
+	  <dd>Supported, used automatically where possible. Not all platforms support SSL/TLS connections over non-blocking sockets, so this isn't used on those platforms. (Having PyOpenSSL installed normally fixes this, and I have a fuller PyOpenSSL fork which handles compression and bandwidth octet-counting better.)</dd>
+	  <dt>NAMESPACE (<a href='http://www.ietf.org/rfc/rfc2342.txt'>RFC2342</a>)</dt>
+	  <dd>Supported. Note that namespace names are <b>not</b> part of this specification - the ones Polymer uses are internally generated. The Internationalization draft gives us names, incidentally, but we don't (yet) support that one.</dd>
+	  <dt>MAILBOX-REFERRALS (<a href='http://www.ietf.org/rfc/rfc2193.txt'>RFC2193</a>)</dt>
+	  <dd>Supported, but caveat: it's slow - an entire connection-cycle is required to open a mailbox, which takes a lot of blocking time.</dd>
+	  <dt>IMAP URLs (<a href='http://www.ietf.org/rfc/rfc2192.txt'>RFC2192</a>)</dt>
+	  <dd>Not an extension. Polymer can operate with full IMAP URLs, as far as I'm aware. These are used with CATENATE, BURL, and URLAUTH, as well as for bookmarks.</dd>
+	  <dt>IDLE (<a href='http://www.ietf.org/rfc/rfc2177.txt'>RFC2177</a>)</dt>
+	  <dd>Polymer can also cope where some classes of message are not issued when IDLE, and will intersperse IDLE commands with NOOP in the case where the remote server hasn't yet issued any useful responses.</dd>
+	  <dt>UNSELECT (<a href='http://www.ietf.org/rfc/rfc3691.txt'>RFC3691</a>)</dt>
+	  <dd>Supported. Where this is unavailable, it'll issue a SELECT with a hopefully impossible mailbox argument.</dd>
+	  <dt>ACL/RIGHTS (<a href='http://www.ietf.org/rfc/rfc4314.txt'>RFC4314</a>)</dt>
+	  <dd>Supported read-only. In other words, this is used for MYRIGHTS only, you can't change ACLs with Polymer yet. Note that Polymer works with RFC2086 based servers as well as the more advanced RFC4314.</dd>
+	  <dt>LITERAL+ (<a href='http://www.ietf.org/rfc/rfc2088.txt'>RFC2088</a>)</dt>
+	  <dd>Uses thse for small literals, or when sending non-first large (>1024) literals.</dd>
+	  <dt>UIDPLUS (<a href='http://www.ietf.org/rfc/rfc4315.txt'>RFC4315</a>)</dt>
+	  <dd>Polymer doesn't yet prime the cache on an append, however, but does use this for COPY and APPEND URL generation.</dd>
+	  <dt>CATENATE (<a href='http://www.ietf.org/rfc/rfc4469.txt'>RFC4469</a></dt>
+	  <dd>Used for certain stateless, non-flag COPY replacements as well as for simply storing messages.</dd>
+	  <dt>ESEARCH (<a href='http://www.ietf.org/rfc/rfc4731.txt'>RFC4731</a>)</dt>
+	  <dd>Which I co-wrote with Alexey Melnikov, so it'd be embarrassing if it weren't supported. Tested against Isode's M-Box IMAP server, which is part-written by Alexey. I've also privately implemented this in Cyrus IMAP 2.3.</dd>
+	  <dt>CONDSTORE (<a href='http://www.ietf.org/rfc/rfc4551.txt'>RFC4551</a>)</dt>
+	  <dd>Polymer's hybrid online/disconnected model works favourably with CONDSTORE. Polymer only uses the CHANGEDSINCE modifier to FETCH.</dd>
+	  <dt>LIST-EXTENDED (<a href='http://www.ietf.org/internet-drafts/draft-ietf-imapext-list-extensions-18.txt'>ietf-imapext-list-extensions</a>)</dt>
+	  <dd>Used for various things.</dd>
+	  <dt>LIST-SUBSCRIBED / LISTEXT (Old variant of above)</dt>
+	  <dd>Supported as fallback, used to replace [R]L{IST|SUB}.</dd>
+	  <dt><i>ACL2</i> (Draft expired)</dt>
+	  <dd>Drop-in replacement for the MYRIGHTS commands Polymer normally issues. With ACL2, it'll use MYRIGHTS returns.</dd>
+	  <dt>SASL-IR (<a href='http://www.ietf.org/internet-drafts/draft-siemborski-imap-sasl-initial-response-06.txt'>siemborksi-imap-sasl-initial-response</a>)</dt>
+	  <dd>Polymer always uses Client Send First if available, for DIGEST-MD5 reauth and ANONYMOUS authentication.</dd>
+	  <dt>POSTADDRESS (<a href='http://www.ietf.org/internet-drafts/draft-melnikov-imap-postaddress-06.txt'>melnikov-imap-postaddress</a>)</dt>
+	  <dd>Polymer can use POSTADDRESS in order to transmit messages directly to mailboxes.</dd>
+	  <dt>URLAUTH (<a href='http://www.ietf.org/rfc/rfc4467.txt'>RFC4467</a>)</dt>
+	  <dd>Polymer uses URLAUTH to submit messages via BURL, if available.</dd>
+	</dl>
+      </dd>
+      
+      <dt>ESMTP</dt>
+      <dd><p>RFCs. Submission extension support is currently quite poor, hence some RFC status extensions are tested only on Isode's M-Switch implementation:</p><dl>
+	  <dt>ESMTP (<a href='http://www.ietf.org/rfc/rfc2821.txt'>RFC2821</a>)</dt>
+	  <dd>Supported, however the code is primarily designed for submission, hence:</dd>
+	  <dt>Submission (<a href='http://www.ietf.org/rfc/rfc2476.txt'>RFC2476</a>)</dt>
+	  <dd>Supported.</dd>
+	  <dt>8BITMIME (<a href='http://www.ietf.org/rfc/rfc1652.txt'>RFC1652</a>)</dt>
+	  <dd>Using a Late Message Assembly technique.</dd>
+	  <dt>BINARYMIME (<a href='http://www.ietf.org/rfc/rfc3030.txt'>RFC3030</a>)</dt>
+	  <dd>Again, this is supported via the Late Message Assembly technique. I've only tested this against my own (very shoddy) submission server.</dd>
+	  <dt>CHUNKING (<a href='http://www.ietf.org/rfc/rfc3030.txt'>RFC3030</a>)</dt>
+	  <dd>Used by default where available. As above, only tested against my own rather poor submission server.</dd>
+	  <dt>PIPELINING (<a href='http://www.ietf.org/rfc/rfc2920.txt'>RFC2920</a>)</dt>
+	  <dd>Including when mixed with CHUNKING and BURL. Polymer is quite conservative about Pipelining - in particular, it doesn't pipeline AUTH, and will clear the pipeline before sending message data.</dd>
+	  <dt>STARTTLS (<a href='http://www.ietf.org/rfc/rfc3207.txt'>RFC3207</a>)</dt>
+	  <dd>Supported where the platform allows. Currently (with Python 2.4) this appears to be everywhere.</dd>
+	  <dt>AUTH (<a href='http://www.ietf.org/rfc/rfc2554.txt'>RFC2554</a>)</dt>
+	  <dd>Supported and passed through to the SASL implementation. The SASL implementation doesn't let Polymer know when it's safe to pipeline AUTH, however.</dd>
+	  <dt>BURL (<a href='http://www.ietf.org/rfc/rfc/rfc4468.txt'>RFC4468</a>)</dt>
+	  <dd>Note that this is only used for a complete message when URLAUTH and UIDPLUS are available on the "staging" IMAP server, and you've set either a Drafts folder or a Sent folder. For message portions, or forwarding, it can be used as part of a CHUNKING remote message assembly, or chunk and assemble using CATENATE on the IMAP server.</dd>
+	</dl>
+      </dd>
+    </dl>
+    
+    <hr>
+    <address><a href="mailto:dave@cridland.net">Dave Cridland</a></address>
+<!-- Created: Wed Jul 28 16:22:30 UTC 2004 -->
+<!-- hhmts start -->
+Last modified: Mon May  9 16:53:16 BST 2005
+<!-- hhmts end -->
+  </body>
+</html>

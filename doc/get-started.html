@@ -1,0 +1,173 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Getting Started</title>
+  </head>
+
+  <body>
+    <h1>Getting Started</h1>
+
+    <p>In general, Polymer asks you for information when it needs it. This gives you a very brief overview of exactly what it's asking.</p>
+    
+    <h2>Mail Servers</h2>
+    
+    <p>Polymer stores information about how you read your email seperately from how you send your email. So you don't need your email address right now. You need your "IMAP" or "IMAP4" server information. When you start Polymer for the first time ever, it'll ask you for at least one mailserver.</p>
+    
+    <dl>
+      <dt>Name for this server</dt>
+      <dd>What they quaintly call a human-readable name. In other words, something like "Work", or "Home", or whatever you like. (For the record, you can't have any of the characters *, %, or / in the name.)</dd>
+      
+      <dt>IMAP Server</dt>
+      <dd>The hostname (or IP address) of the IMAP server your provider has told you to use. For those people with clustered IMAP servers, this should be your home IMAP server. Really advanced folk, who need a port number, can just put in a colon and a port number. Although nobody ought to need to do that. Typical values are stuff like "imap.example.net", or "mail.example.net".</dd>
+      
+      <dt>Use old-style alternate port</dt>
+      <dd>If your provider insists on using old-style alternate ports for secure connections, then you need to tick this. Polymer will then (platform permitting) use TLS on port 993, for IMAP. This is not a good idea, really. Normally Polymer will use RFC2595/RFC3501's STARTTLS command to switch on TLS in mid-flow. Let's get this one straight: <b>This is a bad idea, and Polymer won't love you.</b></dd>
+      
+      <dt>IMAP Authentication</dt>
+      <dd>Typically, select "Any". If you're having trouble, select another option as directed by your provider's technical support. Almost without exception, though, "Any" will auto-select the most secure authentication it can.</dd>
+      
+      <dt>IMAP Username</dt>
+      <dd>Unless you've selected Anonymous as the authentication type, you'll need a username. Some usernames look like email addresses, some don't.</dd>
+      
+      <dt>Check Interval (seconds)</dt>
+      <dd>The default value is 300. Change this to 0 if you really need to save bandwidth. It makes very little difference in practise - you'll see new emails as soon as they arrive if you're looking at Polymer anyway, as long as the remote server is behaving itself.</dd>
+      
+      <dt>Use Identity</dt>
+      <dd>The first time you run Polymer, this has to be "*none*". When you've setup an identity, then you can come back here and change it. All it does it preselect an identity for you if you have multiple accounts.</dd>
+      
+      <dt>SIEVE Server, SIEVE Port</dt>
+      <dd>This is talking about Managesieve, a simple protocol for fiddling with server-side mail filtering scripts. Ask your provider if they support it - most don't, and leaving this blank is perfectly fine.</dd>
+      </dl>
+      
+      <h2>Identities</h2>
+    
+    <p>Identities are used for sending email, so if you try to send email without one defined, Polymer will ask you for details.</p>
+    
+    <dl>
+      <dt>Name for this identity</dt>
+      <dd>Anything you like, but none of %, *, or /. Pick something short.</dd>
+      
+      <dt>Full Name</dt>
+      <dd>The name that will appear on messages from you. Typically, that's your full name, or a well known nickname.</dd>
+      
+      <dt>Email Address</dt>
+      <dd>Your email address. Something like: user@example.net</dd>
+      
+      <dt>Outoing SMTP Server</dt>
+      <dd>Similarly with the IMAP server above, you want a hostname here, optionally with a colon and a port number. Typical examples are "smtp.example.net". Polymer really expects a submission server here - if your provider's documentation mentions "port 587", you're in luck. Otherwise, an old fashioned ESMTP server will work okay, but you'll sometimes not be able to roam.</dd>
+      
+      <dt>SMTP Authentication</dt>
+      <dd>Some providers use authentication - this is a good idea. If they're not doing so, it means you can only use their outgoing server from their network - perhaps you can use it at home, but not work, or your friend's house. If they do, select "Any" here. If not, select "Anonymous".</dd>
+      
+      <dt>SMTP Username</dt>
+      <dd>If you selected "Any" above, then enter a username here.</dd>
+      
+    </dl>
+    
+    <h2>Congratulations</h2>
+    
+    <p>That was, hopefully, the last time you'll ever need to configure Polymer.</p>
+    
+    <h2>Using the client</h2>
+    
+    <p>First, let's look at the left-hand-side of the screen. You should see a handful of items, including, most importantly, "Mail Servers". Inside that (you can click on the arrow or box to expand it, or just double-click), you'll find all your mailservers - and inside that, all your email.</p>
+    
+    <p>Clicking on a mailbox selects it, and brings up the mailbox in a notebook tab on the right. In here, you'll find, from top to bottom:</p>
+    
+    <ol>
+      <li>A toolbar-like thing, with a View Selector (which will be "View all"), a checkbox marked "Dynamic", and a Search button.</li>
+      <li>A summary view of the mailbox.</li>
+      <li>A toolbar with some arrows and a little picture on.</li>
+      <li>A large empty space, currently grey, which upsets the otherwise balanced aesthetics.</li>
+    </ol>
+    
+    <p>The large grey space gets filled with message content when you click on (other otherwise indicate interest) on a message. This is known as reading your mail. ;-)</p>
+    
+    <p>Seriously, the large grey box is there because we have to stick something there. If we don't, then the summary ends up taking up more room, therefore displaying more messages, therefore having to fetch more data from the server.</p>
+    
+    <h3>The view bar</h3>
+    
+    <p>A view is a quick way of listing the messages you particularly care about. It asks the server for only messages matching a certain criteria. Views are also responsible for colouring and styling the summary, too. You can define them in the Mailbox menu. The UI is currently rather poor for this, I'm sorry. Try creating one with the IMAP Search set to "UNSEEN", which is IMAP-speak for Unread, or "UNDELETED", which is IMAP-speak for, well, undeleted.</p>
+    
+    <p>Next to the selector, there's a little checkbox marked "Dynamic". It's normally on, which means the search will update continuously, a little like a virtual mailbox. Off means it'll only update when things radically change.</p>
+    
+    <p>Next to that, you have a search button, which, when toggled on, will show the Quick Search bar, which in turn allows you to quickly search messages matching the view for a particular subject or sender, etc. Note that this is an additional criteria to the view - if you've got the view on Unread, and you quicksearch for From Derek, you'll get all unread messages from anyone called Derek.</p>
+    
+    <p>If you press the search button again, or you change view, then the quicksearch bar will vanish, and you'll go back to just the view.</p>
+    
+    <h3>The Summary</h3>
+    
+    <p>This shows all the messages in your mailbox. Note that for confusing technical reasons, you can't yet sort it, nor get a threaded view, and so the most recent messages are always at the bottom. Luckily, when you open a mailbox, it'll jump to the first recent message. (Not unread, but recent, incidentally.)</p>
+    
+    <p>Several things are worth noting - the first column contains a series of magic, cryptic, letters, such as "~" for deleted messages, "$" for junk, "U" for unread, "R" for recent, "A" for answered, "!" for flagged, and suchlike.</p>
+    
+    <p>Each message can be styled in different ways by filters - any filter can style a message with foreground and background colours, and font changes. That's up to you.</p>
+        
+    <p>Apart from simply reading the message, you can also drag the entry to the tree on the left. Depending where you drop it, different things will happen - if you drop it on a Bookmark, a new bookmark will be added for that message. If you drop it on a mailbox, it'll get copied to that mailbox. You can't, currently, drop it anywhere else, although you can drag it onto another application. If you drop it on a text editor, it'll normally cause its URL to be inserted.</p>
+    
+    <p>Bookmarking emails is a handy way of keeping a note of important emails, saving you from having to search for them again later.</p>
+    
+    <h3>The Message Toolbar</h3>
+    
+    <p>There are browser-style back and forward buttons, which behave roughly as you'd expect (note that history is kept per-mailbox), but there's also an Up arrow, which will take you to the message the current message is in reply to, if that's in the current folder, and Polymer knows about it. Consider that last one a sort of poor man's threading.</p>
+    
+    <p>The button with the bit of paper on is to examine the full headers of the message - generally, you won't need this. The headers are displayed after being decoded, incidentally, so any accented character will be shown properly.</p>
+    
+    <h3>The Message Pane</h3>
+    
+    <p>This shows the currently selected message. Modern email clients send a message formatted as HTML or the much smaller and lighter "flowed format" text - these will show nice and clearly. For older email clients, which send the old-style "fixed format" text, Polymer will not wrap the text, nor colourise it.</p>
+    
+    <p>Polymer can cope with reasonably complex messages, and will show them as faithfully as it can. It does, however, scale down images for display.</p>
+
+    <h2>Replying and Forwarding</h2>
+    
+    <p>Replying can be done in many ways - currently six. Luckily, there's a default "Reply" in the Message menu, which does The Right Thing.</p>
+    
+    <p>The Right Thing is quite difficult to guess for mailing lists, however, so Polymer will ask you for every different mailing list.</p>
+    
+    <p>Forwarding is a little simpler, because only two methods exist right now... "As MIME" makes the message an attachment of a new message. "Quoted" forwards a message rather like a reply, quoted inline. The latter can be more expensive to do, in terms of bandwidth, but is sometimes useful.</p>
+    
+    <h2>Deleting Messages</h2>
+    
+    <p>IMAP uses a "two phase delete", which means that if you're on three phase power, you can't use it.</p>
+    
+    <p>Okay, seriously, you delete messages by marking them as deleted (Hit the DEL or Delete key on your keyboard), and then using the Expunge menu item in the Mailbox menu. This is done for several reasons... Firstly, it's a lot quicker, in almost every server, to mark messages deleted, and actually get rid of them all at once.</p>
+    
+    <p>Secondly, it means that instead of a Trash mailbox, all your "deleted" messages are kept exactly where they were, so it's easy to find and undelete them.</p>
+    
+    <h2>Finishing reading</h2>
+    
+    <p>If you've finished reading a mailbox, you can just leave it open, or close it with Mailbox->Close. Or you can right-click on the tab, and close it there. (For keen IMAP buffs: Close only closes the window. It doesn't issue an IMAP CLOSE, which Polymer never does.)</p>
+    
+    <h2>Managing your addressbook</h2>
+    
+    <p>As you read your messages, Polymer will automatically capture the sender's details into an addressbook called PolymerCapture. So anyone whose mail you've read can be found easily.</p>
+    
+    <h3>Searching the addressbook</h3>
+    
+    <p>Just write a new message, to (for instance), "fred". When you hit the Expand button in the composer, or when you try to send the message, Polymer will hunt down addressbook entries with "fred" in likely places. If there's more than one, it'll ask if you want to set an alias, or nickname, so that when you type "fred" again, it always finds the <i>right</i> fred.</p>
+    
+    <p>That was simple, right?</p>
+    
+    <h3>Adding more servers and identities</h3>
+    
+    <p>You can add more servers and identities by right clicking on those parts fo the tree, and selecting "New". In fact, you can right click almost anything to do advanced stuff.</p>
+    
+    <h3>Fun and Games</h3>
+    
+    <p>Okay, so you've configured it perfectly, with 15 IMAP accounts and 5 filters colouring mails to you in an interesting <i>vomit yellow</i> background colour, etc. Now shutdown Polymer, and delete your local configuration, by using "File->Exit Clean"</p>
+    <p>Seriously.</p>
+    <p>You can do this manually by erasing the directory "C:\Documents and Settings\<username>\Application Data\Polymer\" on Windows, and "~/.Polymer/" on UNIX, if you like, but the handy menu entry does this the quick way.</p>
+    <p>No, really, you have to try this.</p>
+    <p>Now restart Polymer.</p>
+    <p>You'll need to re-enter your ACAP server and username, and enter various passwords.</p>
+    <p>And you're right back to where you were. Are you impressed yet?</p>
+    
+    <hr>
+    <address><a href="mailto:dave@cridland.net">Dave Cridland</a></address>
+<!-- Created: Tue Feb  1 12:41:49 GMT 2005 -->
+<!-- hhmts start -->
+Last modified: Tue Feb  1 14:56:24 GMT 2005
+<!-- hhmts end -->
+  </body>
+</html>

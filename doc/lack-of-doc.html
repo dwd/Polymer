@@ -1,0 +1,100 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Lack Of Documentation</title>
+  </head>
+
+  <body>
+    <h1>Lack Of Documentation</h1>
+    
+    <h2>Work In Progress</h2>
+    <p>Polymer is a work in progress. Do not, for a minute, assume that it will work. Chances are strong that it will not. That said, I use it all the time, and I use nothing else.</p>
+    
+    <h2>What is Polymer?</h2>
+    <p>Polymer is an online (but disconnect-capable) fully ACAP-aware IMAP client. It allows full, low-bandwidth access to multiple IMAP servers, in full kiosk mode if required. It supports a plethora of extensions to IMAP, and provides full roaming facilities, giving access to addressbooks, email, and a few more bits and peices wherever you are, and - hopefully - on whatever platform you're on.</p>
+    <p>So essentially it's either a poorly featured, pretty ugly, wannabe groupware client, or else it's a highly featured (in some limited respects) email client. One of the two, or in most cases, both.</p>
+    
+    <h2>Installation</h2>
+    
+    <p>Oh... I keep the instructions on that thar inner-web much more up to date than here. Read <a href='http://dave.cridland.net/acap/polymer.html'>this</a> and do what it says.</p>
+    
+    <h2>Overgeneralized usage instructions.</h2>
+    
+    <p>First things first. When you first run Polymer from a particular computer (or every time, if you run it in kiosk mode), it'll ask you for your <i>home</i> ACAP server. This is the server where you live, and where information is stored and accessed from by default.</p>
+    
+    <p>When you run Polymer for the first time ever, it'll then ask you for an IMAP account. Enter the details lovingly.</p>
+    
+    <p>Now you may read you email. Note that there's a Thing on the left with "Mail Servers" in it - expand this, you'll find your IMAP account. If you right click on "Mail Servers", or one of your IMAP accounts, you'll get some options, like adding a new one, editing the current one, etc. Oh, and properties - especially useful if things don't work right.</p>
+    
+    <p>Within each IMAP account node in the NavTree, you'll find mailboxes, namespaces, etc. Just go click-happy.</p>
+    
+    <p>Whenever you read an email, Polymer will capture the sender's details - including what character sets they use to write their name, so you can spell their name the same way they do even if you can't read it. It'll capture these to your capture addressbook, which was created automagically the first time you needed it. It's in the Addressbooks node.</p>
+    
+    <p>When you send a new email - either by replying to one, or by "Message->New Message", or "File->New" - Polymer will ask for Identity information if it doesn't have it - this includes SMTP server information.</p>
+    
+    <p>Identities appear in the NavTree as well - they're at the bottom, since we don't use them often. You'll find you can have as many as you like.</p>
+    
+    <p>Finally, there's a Bookmarks node in the NavTree - this holds your bookmarks. You can add a bookmark in two ways - either through the "Bookmarks->Add" menu item, which bookmarks whatever you're looking at (normally a mail message), or by dragging them from the dragging-a-URL-thing in your browser.</p>
+    
+    <p>Bookmarking ACAP URLs - or clicking on them in a message - acts a little funny, though. If you try to bookmark an ACAP URL to a bookmarks dataset, then it'll add it as a subfolder instead, allowing you to instantly access the bookmarks within it.</p>
+    <p>Bookmarking most other datasets simply bookmarks them, but actuating them causes the information within them to be merged, somewhat, with yours - in fact, it'll subfolder them. (But present the results all at the same level, sometimes, to avoid being quite so confusing.)
+    
+    <p>All of this is based on open, published, standards. If you like it, please kick me (to republish the addressbooks draft) and Randall Gellens (to republish all his).</p>
+    
+    <h2>FAQ, part 1</h2>
+    <p>Questions that have yet to be asked, but sadly, I just *know* they will be.</p>
+    <dl>
+      <dt>Why are you using ACAP? Nobody uses ACAP, it's a dead protocol, everyone uses [LDAP|WebDAV|HTTP|IMAP] these days.</dt>
+      <dd><p>Cool. I love being the only person to get something right:</p>
+	<ul>
+	  <li>LDAP is a directory service. I don't keep my personal phone list with BT, I keep it to myself. Attempts have been made to make LDAP work differently, but fundamentally it was designed for a different job. It's a great job, don't get me wrong. Not *this* job, though.</li>
+	<li>WebDAV is for document publishing, and, with DeltaV, version control. I think it's great for that. Not for the purposes I need, though. If I used WebDAV, I'd have to publish a snapshot of my data, not the data itself. There's a big distinction which I really don't like.</li>
+	<li>HTTP, see WebDAV, which is what (I hope) you mean. (If you meant something involving hideous CGI scripts, please hang your head in shame and leave now.)</li>
+	<li>IMAP is an excellent mail protocol, taking full advantage of the immutable nature of the message. My data does change, sorry. FWIW, if it didn't, I'd be using LDAP.</li>
+	</ul>
+	<p>Just because nobody yet uses ACAP does not mean it's dead. It can't be, it hasn't been born yet. It is, however, designed from the ground up to do the job I'm putting it to here.</p>
+      </dd>
+      <dt>Your client sucks, because it doesn't X</dt>
+      <dd>
+	<p>To be fair, this isn't a question, but I'll attempt to answer it anyway.</p>
+	<p>Polymer is very much a work in progress. I've deliberately concentrated on certain functionality, and I freely acknowledge that I've skimped on others. In some cases, I have no intention of ever putting certain functionality in, because it's my personal belief that said functionality does not belong in a desktop mail client.</p>
+	<p>I'm sure that someone else will, if this whole project takes off, come along and write a different client, with different principles in mind. Or they might write a different client with the same principles in mind. I might even drop Polymer and use it, if I think it's better.</p>
+	<p>There's even an outside chance someone will write in the functionality you want anyway. It could even be you.</p>
+      </dd>
+      <dt>Your client sucks, because it's ugly.</dt>
+      <dd>Yes, it is. I'm gradually making it prettier, though.</dd>
+    </dl>
+    
+    <h2>FAQ, Part 2</h2>
+    <p>What are you going to do about... ?</p>
+    <dl>
+      <dt>You Got Mail!!!!</dt>
+      <dd>I think this is a job for the server, oddly enough. Cyrus IMAP has this functionality, for instance, and more code for that could allow, for instance, SMS messaging, any of the Jabber/AIM/etc protocols, and much more besides. In many respects, this provides a considerably more powerful and flexible system, as it allows for the user to specify what messages require notification, and how to notify.</dd>
+      <dt>Filtering</dt>
+      <dd>Again, this is a job for the server. There's code to speak the managesieve protocol which timseived speaks in the Python stuff, I just need to write a UI to edit them, and ultimately a GUI to edit them without your head falling off. It'd be nice to support the SEIVE/ACAP stuff in the email dataset, but that design appears, to me, to assume a tight coupling between IMAP and ACAP servers. I neither have, nor want, that.</dd>
+      <dt>Calendaring</dt>
+      <dd>Yeah, Calendaring would be nice, wouldn't it. Unfortunately, can't use CalDAV, because it'd lose on the "low bandwidth access protocol" thing I have going, and can't use CAP because, well, one barely used protocol ina  client is quite enough for now. Give me time.</dd>
+      <dt>Offline Access</dt>
+      <dd>It's low on my personal priorities, actually. I don't actually access my stuff offline. Polymer isn't really designed to cope. I've not thought about how to do it. Update: I have thought about how to do it. But not much. Basically, two things need to happen: Firstly, background synchronization needs to happen by sneaking in updates to the current mailbox, working backwards, pulling ever more data through. Secondly, the entire system needs to be able to cope without grabbing data from the server all the time.</dd>
+      <dt>Multithreading</dt>
+      <dd>Polymer's multithreaded, in order to cope with the appalling nature of socket handling in wxPython. Otherwise, it's single-process, with asynchronous handling of command completion. Sometimes, it uses the synchronous API, and I'm trying to get rid of these where it makes sense.</dd>
+      <dt>Anti Spam/Virus</dt>
+      <dd>I think this lives on the server. The trouble is, it's a filtering action, and filtering doesn't work well when you have multiple clients acting on the same messages.</dd>
+      <dt>Gnome/KDE/Windows native version</dt>
+      <dd>For Gnome, there is, astonishingly, a rewrite of the UI in progress, but it's really slow going. This is really to support GTK+ natively, to move onto the Nokia 770. If you want this to happen faster, buy me a 770.</dd>
+    </dl>
+    <p>Why does it do...?</p>
+    <dl>
+      <dt>Bookmarks</dt>
+      <dd>Well, originally, really, because I could. I figured out how to launch arbitrary URLs, and from there there was no stopping me. It can, however, bookmark such wonderful things as mail messages, which can be astonishingly useful, so it's not a complete waste of space. Additionally, you can drag URLs from your browser - or back again - which is slightly more useful. And of course, they follow you about wherever you go. Hoorah for data mobility.</dd>
+      <dt>Calendaring</dt>
+      <dd>Ah. It doesn't. Shshshsh. :-)</dd>
+    </dl>
+    <hr>
+    <address><a href="mailto:dave@cridland.net">Dave Cridland</a></address>
+<!-- Created: Wed Apr 21 17:49:38 BST 2004 -->
+<!-- hhmts start -->
+Last modified: Wed Jan 12 21:09:51 GMT 2005
+<!-- hhmts end -->
+  </body>
+</html>
