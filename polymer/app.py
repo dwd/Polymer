@@ -261,7 +261,7 @@ class MyApp(wx.App,infotrope.environment.environment):
             subtype = 'x-default'
         else:
             subtype = subtype.lower()
-        for t,s in [(mtype,subtype),('application','octet-stream'),('text','plain')]:
+        for t,s in [(mtype,subtype),('application','octet-stream')]:
             ft = wx.TheMimeTypesManager.GetFileTypeFromMimeType(t + '/' + s)
             if ft is not None:
                 icon = ft.GetIcon()
@@ -538,6 +538,8 @@ class MyApp(wx.App,infotrope.environment.environment):
         self.AddPendingEvent( ProdEvent() )
 
     def progwin( self ):
+        if self.options.noprogwin:
+            return None
         if self._progwin is None:
             import polymer.progress
             self._progwin = polymer.progress.progwin()

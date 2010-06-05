@@ -35,7 +35,7 @@ supported_image_types = None
 def new_process( parent, msg, resize, sizer ):
     global supported_image_types
     if supported_image_types is None:
-        supported_image_types = [ x.upper().encode('us-ascii').split('/')[1] for x in [ x.GetMimeType() for x in [wx.TheMimeTypesManager.GetFileTypeFromExtension(ext[2:]) for ext in wx.Image.GetImageExtWildcard().split('|')[1].split(';')] if x is not None ] if x is not None ]
+        supported_image_types = [ x.upper().encode('us-ascii').split('/')[1] for x in [ x.GetMimeType() for x in [wx.TheMimeTypesManager.GetFileTypeFromExtension(ext[2:]) for ext in wx.Image.GetImageExtWildcard().split('|')[1].split(';')] if x is not None ] if x ]
         for x in supported_image_types:
             display_factories['IMAGE'][x] = image_generic
     added_expander = False

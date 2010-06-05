@@ -45,6 +45,7 @@ def handle_options():
     parser.add_option( "-w", "--bandwidth", type="string", help="Emulate lower bandwdith, capping at BANDWIDTHb/s" )
     parser.add_option( "-n", "--appname", type="string", default="Polymer", help="Override default application name" )
     parser.add_option( "-V", "--wxversion", type="string", help="Select wxPython version, use help to list." )
+    parser.add_option( "-K", "--noprogwin", action="store_true", help="No progress window, for Kev", default=False)
     parser.add_option( "--sync", action="store_true", default=False, help="Do Sync." )
     return parser.parse_args()
         

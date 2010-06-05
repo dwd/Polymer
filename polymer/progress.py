@@ -15,7 +15,9 @@ class operation:
         self._pgbar = None
         self._st_txt = None
 
-        wx.GetApp().progwin().add_op( self )
+        p = wx.GetApp().progwin()
+        if p:
+            p.add_op( self )
 
     def update( self, status, pcur = None ):
         if pcur:
