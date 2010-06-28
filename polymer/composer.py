@@ -412,19 +412,18 @@ class MessageBase( wx.Frame ):
             return False
         if self._text.GetModify():
             return False
-        #for x in self.recipients.values():
-        #    if x.GetModify():
-        #        return False
-        #return True
-        return False
+        for ch,r in self.headers:
+            if r.IsModified():
+                return False
+        return True
 
     def set_saved( self ):
         self._from_changed = False
         self._subject_changed = False
         self._attachments_changed = False
         self._text.SetSavePoint()
-        #for x in self.recipients.values():
-        #    x.SetSavePoint()
+        for ch,r in self.headers:
+            r.SetSaved()
 
     def update_title( self, event=None ):
         txt = self._subject.GetValue()

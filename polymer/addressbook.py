@@ -541,7 +541,7 @@ class Recipient:
             add_bits = ""
             if self._parent is None:
                 add_bits = " LIMIT 1 1"
-            search = infotrope.acap.search( 'SEARCH "/addressbook/~/" DEPTH 0%s RETURN ("entry" "addressbook.*") OR OR SUBSTRING "addressbook.CommonName" "i;octet" "%s" SUBSTRING "addressbook.CommonName" "i;ascii-casemap" "%s" OR SUBSTRING "addressbook.AlternateNames" "i;octet" "%s" SUBSTRING "addressbook.AlternateNames" "i;ascii-casemap" "%s"' % ( add_bits, self._field, self._field, self._field, self._field ), connection=wx.GetApp().acap_home() )
+            search = infotrope.acap.search( 'SEARCH "/addressbook/~/" DEPTH 0%s RETURN ("entry" "addressbook.*") OR OR SUBSTRING "addressbook.CommonName" "i;octet" "%s" SUBSTRING "addressbook.CommonName" "i;ascii-casemap" "%s" OR SUBSTRING "addressbook.AlternateNames" "i;ascii-casemap" "%s" SUBSTRING "addressbook.Email" "i;ascii-casemap" "%s"' % ( add_bits, self._field, self._field, self._field, self._field ), connection=wx.GetApp().acap_home() )
             search.wait()
             if len(search)==0:
                 self._addressbook_entry = False
@@ -666,6 +666,7 @@ class RecipientCtrl(wx.TextCtrl):
     def resolve( self, frame=None ):
         ''' Turn a comma delimited list of recipients into a list of Recipients. '''
         #print "Resolving: ",`frame`
+        mod = self.IsModified()
         if self.GetValue() == '':
             self._value = None
             self._saved_txt = ''
@@ -680,7 +681,12 @@ class RecipientCtrl(wx.TextCtrl):
             if frame is not None:
                 self._saved_frame = True
         self.resolved()
+        if mod:
+            self.MarkDirty()
         return self._value
+    
+    def SetSaved(self):
+        self.SetValue(self.GetValue())
 
     def GetHeader( self ):
         ''' Get the header value '''
