@@ -727,6 +727,35 @@ class mbox_info_tl( mbox_info ):
             self.server().log( "Adding child namespace" )
             self._children[displaypath[0]].add_namespace( displaypath, pfx )
 
+class idle(infotrope.base.command):
+    def __init__( self, env, server ):
+        infotrope.base.command.__init__( self, env, None, ('IDLE',) )
+        self.idle_command = True
+        self.resend = False
+        self.feeding = True
+        self.stop = False
+        self.server = weakref.ref(server)
+        self.oncomplete(self.check)
+
+    def feed( self, payload ):
+        self.feeding = False
+        if self.stop:
+            if self.server().state != 'dead' and self.server().s is not None:
+                self.server().s.write('DONE\r\n')
+                self.server().proto_log('DONE')
+                self.server().proto_log_done()
+                self.server().log("(by IDLE)")
+            else:
+                self.server().set_state('dead', 'IDLE (cmd)')
+            self.server().idling = False
+        else:
+            self.server().idling = True
+        return
+
+    def check(self, cmd, t,r,s):
+        if r.lower()!='ok':
+            self.server().idling = False
+
 class authenticate(infotrope.base.command):
     def __init__( self, server ):
         self.server = weakref.ref( server )
@@ -896,17 +925,19 @@ class connection(infotrope.base.connection):
         return states
 
     def change_state(self, newstate):
-        if self.state == 'auth':
+        if self.state == 'auth' or self.state == 'mbox':
             if newstate.startswith('selected:'):
                 newpath = newstate[len('selected:'):]
                 mbx = self.mailbox(newpath,open=False)
                 self.set_cwm(newpath, mbx, True)
                 return True
         elif self.state == 'dead':
-            self.idling = False
+            self._cwm = None
+            self._cwm_mbx = None
             self.set_state('init', 'Change State 876')
             self.do_connect()
             return True
+        self.log("Cannot change state from %s to %s" % (self.state, newstate))
         return False
 
     def send( self, *cmd, **kw ):
@@ -1802,6 +1833,8 @@ class connection(infotrope.base.connection):
                     mbx.sync()
                     if mbx.notify():
                         self.log( "Pending notifies, won't change IDLE state." )
+                        self.send( 'NOOP', state='any' )
+                        self.flush()
                         return
         if 'IDLE' not in self.capability():
             if enter and self.state == 'mbox' and ( time.time() - self.last_prod ) > ( 300 ):
@@ -1822,34 +1855,6 @@ class connection(infotrope.base.connection):
                 self.flush()
                 return
             self.log( "IDLE on" )
-            class idle(infotrope.base.command):
-                def __init__( self, env, server ):
-                    infotrope.base.command.__init__( self, env, None, ('IDLE',) )
-                    self.idle_command = True
-                    self.resend = False
-                    self.feeding = True
-                    self.stop = False
-                    self.server = weakref.ref(server)
-                    self.oncomplete(self.check)
-
-                def feed( self, payload ):
-                    self.feeding = False
-                    if self.stop:
-                        if self.server().state != 'dead' and self.server().s is not None:
-                            self.server().s.write('DONE\r\n')
-                            self.server().proto_log('DONE')
-                            self.server().proto_log_done()
-                            self.server().log("(by IDLE)")
-                        else:
-                            self.server().set_state('dead', 'IDLE (cmd)')
-                        self.server().idling = False
-                    else:
-                        self.server().idling = True
-                    return
-
-                def check(self, cmd, t,r,s):
-                    if r.lower()!='ok':
-                        self.server().idling = False
             self.idling,r,s = self.send( idle(self.env,self), state='auth' )
             self.idling.counter_sent = None
             self.flush()

@@ -164,6 +164,10 @@ class connection(infotrope.core.connection):
         if self.state == newstate:
             return
         self.state = newstate
+        if self.state == 'dead':
+            for tag,cmd in self.inprog.items():
+                cmd.complete(tag, 'BAD', 'Server disconnected')
+            self.inprog = {}
         self.log('State change to %s (%s)' % (newstate, reason or 'No reason'))
         self.send_next_command()
         
@@ -907,12 +911,13 @@ class connection(infotrope.core.connection):
         self.send_next_command()
 
     def send_next_command(self):
+        self.log("Sending next command.")
         if self.last_command:
-            #print " - No last command"
             if self.last_command.feeding or self.last_command.pending_literal:
-                #print " - Last command is feeding or has pending literal"
+                self.log("Last command is feeding or has pending literal")
                 return
         states = [self.state] + self.valid_states()
+        self.log("Looking for command from states %s" % (`states`))
         for s in states:
             cqueue = self.queue.get(s,[])
             while cqueue:
@@ -927,11 +932,15 @@ class connection(infotrope.core.connection):
                         pass
                 self.send_real(cmd,{'pipeline':True})
                 if self.last_command.feeding or self.last_command.pending_literal: # Blocking.
+                    self.log("New command is feeding or has pending literal")
                     return
                 cqueue = self.queue.get(s,[])
         if not self.commands_in_progress():
+            self.log("No command in valid state to send - changing state.")
             for s in self.queue.keys():
+                self.log("Considering state change to %s" % s)
                 if self.change_state(s):
+                    self.log("Initiated state change to %s" % s)
                     break
         self.flush()
 
