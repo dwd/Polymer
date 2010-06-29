@@ -1,0 +1,54 @@
+Hi.
+
+Welcome to Polymer.
+
+It's something a bit like an email client.
+
+More accurately, it's something a bit like an email client would have
+been, if it had been written using state-of-the-art technology, circa
+1997, and then kept up with everything.
+
+Except Python didn't exist, then.
+
+It's intended to be as fast as buggery, and handle vast mailboxes
+precisely as fast as small ones.
+
+Polymer has some unusual requirements, so please take note:
+
+1) It needs wxPython. I'm currently using 2.8.
+
+2) pyOpenSSL is highly, highly, recommended. I use a patched version,
+hey-ho.
+
+3) It needs an ACAP server. No, really, I'm not making this up. You can
+use mine, if you want - it'll auto-provision, and it's the default. I
+have got some support for working without one, I doubt it works.
+
+4) It can use a full Lemonade-spec mailsystem. It likes extensions. I
+mention this because it remains the most advanced - in terms of
+extensions supported - client in existence, in my not-terribly humble
+opinion.
+
+5) There's an XMPP client built in, although it's not much cop.
+
+You'll find that in order to be remotely useful, you'll need to set up
+some view filters (Tools->Views...), and to do this youll need to, erm,
+type in IMAP SEARCH protocol snippets. Yes, yes, I never got around to
+doing the editor.
+
+If you run into problems, drop me a line at mailto:dave@cridland.net, or
+alternately xmpp:dwd@dave.cridland.net
+
+The project was originally (and is, nominally) two distinct bits - a
+Python protocol library, and the GUI itself. I may yet split it apart
+again.
+
+It's GPL licensed - I foolishly accepted GPL inbound, otherwise I'd
+relicense to BSD or MIT. I will eventually have written out those parts
+and will do that relicensing thing.
+
+In any case, the project's now BSD/MIT inbound.
+
+Enjoy,
+
+Dave
